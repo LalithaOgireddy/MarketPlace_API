@@ -1,4 +1,4 @@
-package com.lalitha.marketplace_api.entity;
+package com.lalitha.marketplace_api.domain.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -27,6 +27,9 @@ public class Advertisement {
 
     @NotNull
     private String description;
+
+    @NotNull
+    private String category;
 
     private String brand;
 

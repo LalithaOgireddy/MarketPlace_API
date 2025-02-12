@@ -1,4 +1,4 @@
-package com.lalitha.marketplace_api.entity;
+package com.lalitha.marketplace_api.domain.entity;
 
 
 import jakarta.persistence.*;
