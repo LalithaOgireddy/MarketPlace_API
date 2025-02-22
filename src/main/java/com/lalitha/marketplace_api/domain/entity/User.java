@@ -16,6 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode(exclude = "ads")
+@Builder
 
 @Entity
 public class User {

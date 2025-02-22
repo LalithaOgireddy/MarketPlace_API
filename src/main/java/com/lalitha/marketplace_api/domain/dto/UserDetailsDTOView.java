@@ -4,6 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record UserDetailsDTOView (
+        Long id,
         String firstName,
         String lastName,
         String phoneNumber,

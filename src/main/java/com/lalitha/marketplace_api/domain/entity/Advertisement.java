@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-
+@Builder
 @Entity
 public class Advertisement {
 
