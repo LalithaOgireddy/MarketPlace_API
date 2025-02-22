@@ -7,11 +7,12 @@ import com.lalitha.marketplace_api.exception.DataNotFoundException;
 import com.lalitha.marketplace_api.repository.AdvertisementRepository;
 import com.lalitha.marketplace_api.service.AdvertisementService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class AdvertisementServiceImpl implements AdvertisementService {
 
     private final AdvertisementRepository advertisementRepository;
@@ -77,17 +78,38 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     @Override
     public List<AdvertisementDTOView> findAllByCategoryAndKeyword(String category, String keyword) {
         return List.of();
-    }
+    }*/
 
     @Override
-    public AdvertisementDTOView update(Long id, AdvertisementDTOForm form) {
-        return null;
+    public AdvertisementDTOView update(AdvertisementDTOForm form) {
+        //check if input frm is null, thow exception if null
+        if(form == null) throw new IllegalArgumentException("Advertisement input form is null");
+
+        //get entity if ad exists by id, if not throw exception
+        Advertisement advertisement = advertisementRepository.findById(form.id()).orElseThrow(()->new DataNotFoundException("Advertisement not found"));
+        //update entityby setters
+        advertisement.setTitle(form.title());
+        advertisement.setDescription(form.description());
+        advertisement.setCategory(form.category());
+        advertisement.setBrand(form.brand());
+        advertisement.setPrice(form.price());
+        advertisement.setCurrency(form.currency());
+        advertisement.setCondition(form.condition());
+        advertisement.setExpiryDate(form.expiryDate());
+        advertisement.setSold(form.sold());
+
+        //save entity to db
+        advertisementRepository.save(advertisement);
+
+        //convert entity to view and return
+        return fromAdvEntityToView(advertisement);
     }
 
     @Override
     public void delete(Long id) {
-
-    }*/
+        Advertisement advertisement = advertisementRepository.findById(id).orElseThrow(()->new DataNotFoundException("Advertisement not found"));
+        advertisementRepository.delete(advertisement);
+    }
 
     private AdvertisementDTOView fromAdvEntityToView(Advertisement advertisement) {
         AdvertisementDTOView.AdvertisementDTOViewBuilder builder = AdvertisementDTOView.builder()

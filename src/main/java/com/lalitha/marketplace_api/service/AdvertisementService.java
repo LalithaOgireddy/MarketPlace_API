@@ -13,7 +13,7 @@ public interface AdvertisementService {
     List<AdvertisementDTOView> findAllBySeller(String sellerId);
     /*
     List<AdvertisementDTOView> findAllByCategory(String category);
-    List<AdvertisementDTOView> findAllByCategoryAndKeyword(String category, String keyword);
-    AdvertisementDTOView update(Long id, AdvertisementDTOForm form);
-    void delete(Long id);*/
+    List<AdvertisementDTOView> findAllByCategoryAndKeyword(String category, String keyword);*/
+    AdvertisementDTOView update(AdvertisementDTOForm form);
+    void delete(Long id);
 }

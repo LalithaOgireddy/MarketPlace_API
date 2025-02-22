@@ -9,7 +9,9 @@ import com.lalitha.marketplace_api.service.UserService;
 import com.lalitha.marketplace_api.util.CustomPasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
