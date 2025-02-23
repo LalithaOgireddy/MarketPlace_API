@@ -2,12 +2,15 @@ package com.lalitha.marketplace_api.service.impl;
 
 import com.lalitha.marketplace_api.domain.dto.AdvertisementDTOForm;
 import com.lalitha.marketplace_api.domain.dto.AdvertisementDTOView;
+import com.lalitha.marketplace_api.domain.dto.UserDTOForm;
 import com.lalitha.marketplace_api.domain.entity.Advertisement;
 import com.lalitha.marketplace_api.domain.entity.User;
 import com.lalitha.marketplace_api.exception.DataNotFoundException;
+import com.lalitha.marketplace_api.exception.InvalidUserException;
 import com.lalitha.marketplace_api.repository.AdvertisementRepository;
 import com.lalitha.marketplace_api.repository.UserRepository;
 import com.lalitha.marketplace_api.service.AdvertisementService;
+import com.lalitha.marketplace_api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,19 +23,33 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     private final AdvertisementRepository advertisementRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
-    public AdvertisementServiceImpl(AdvertisementRepository advertisementRepository,UserRepository userRepository) {
+    public AdvertisementServiceImpl(AdvertisementRepository advertisementRepository, UserRepository userRepository, UserService userService) {
         this.advertisementRepository = advertisementRepository;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @Override
     public AdvertisementDTOView create(AdvertisementDTOForm form) {
-        //check null value in form
+
         if(form == null) throw new IllegalArgumentException("form is null");
+
+        //if user exists, authenticate
+        if(userRepository.existsByEmail(form.seller().email())) {
+            if(!userService.authorizeUser(form.seller().email(), form.seller().password())) {
+                throw new InvalidUserException("Invalid user credentials");
+            }
+        }
+        //else register the user
+        else{
+                UserDTOForm userDTOForm = new UserDTOForm(form.seller().email(), form.seller().password());
+                userService.register(userDTOForm);
+        }
+        // register advertisement
         User seller = userRepository.getUserByEmail(form.seller().email());
-        //convert form to entity
         Advertisement advertisement = Advertisement.builder()
                 .title(form.title())
                 .description(form.description())
@@ -45,11 +62,21 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .expiryDate(form.expiryDate())
                 .seller(seller)
                 .build();
-
-        //save entity to db
         advertisementRepository.save(advertisement);
-        //convert saved entity to view and return
         return fromAdvEntityToView(advertisement);
+    }
+
+    @Override
+    public List<AdvertisementDTOView> authAndGetCatalog(String email,String password) {
+        List<AdvertisementDTOView> ads;
+        boolean authUser = userService.authorizeUser(email, password);
+        if(!authUser) { throw new InvalidUserException("User not found"); }
+        else {
+            ads = findAllBySeller(email);
+        }
+        //if(ads.isEmpty()) throw new DataNotFoundException("No advertisements found");
+        return ads;
+
     }
 
     @Override

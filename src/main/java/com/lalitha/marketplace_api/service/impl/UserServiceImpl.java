@@ -23,13 +23,11 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final CustomPasswordEncoder passwordEncoder;
-    private final AdvertisementService advertisementService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, CustomPasswordEncoder passwordEncoder, AdvertisementService advertisementService) {
+    public UserServiceImpl(UserRepository userRepository, CustomPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.advertisementService = advertisementService;
     }
 
     @Override
@@ -105,16 +103,5 @@ public class UserServiceImpl implements UserService {
         userRepository.updateExpiredByEmail(email,true);
     }
 
-    @Override
-    public List<AdvertisementDTOView> authAndGetCatalog(UserDTOForm userDTOForm) {
-        List<AdvertisementDTOView> ads;
-        boolean authUser = authorizeUser(userDTOForm.email(), userDTOForm.password());
-        if(!authUser) { throw new InvalidUserException("User not found"); }
-        else {
-            ads = advertisementService.findAllBySeller(userDTOForm.email());
-        }
-        if(ads.isEmpty()) throw new DataNotFoundException("No advertisements found");
-        return ads;
 
-    }
 }

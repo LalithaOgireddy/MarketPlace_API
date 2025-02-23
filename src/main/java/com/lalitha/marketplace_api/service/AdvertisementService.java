@@ -9,6 +9,7 @@ import java.util.List;
 public interface AdvertisementService {
 
     AdvertisementDTOView create(AdvertisementDTOForm form);
+    List<AdvertisementDTOView> authAndGetCatalog(String email,String password);
     AdvertisementDTOView findById(Long id);
     List<AdvertisementDTOView> findAll();
     List<AdvertisementDTOView> findAllBySeller(String sellerId);

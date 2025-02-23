@@ -18,5 +18,4 @@ public interface UserService {
 
     void enableByEmail(String email);
 
-    List<AdvertisementDTOView> authAndGetCatalog(UserDTOForm userDTOForm);
 }

@@ -49,11 +49,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userDTOView);
     }
 
-    @PostMapping("/authenticate")
-    public ResponseEntity<List<AdvertisementDTOView>> doAuthenticateAndGetCatalog(@Valid @RequestBody UserDTOForm userDTOForm) {
-        List<AdvertisementDTOView> adViews = userService.authAndGetCatalog(userDTOForm);
-        return new ResponseEntity<>(adViews, HttpStatus.OK);
-    }
 
     @PutMapping("/disable")
     public ResponseEntity<Void> doDisableUser(@RequestParam("email") String email) {

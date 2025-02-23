@@ -2,8 +2,10 @@ package com.lalitha.marketplace_api.controller;
 
 import com.lalitha.marketplace_api.domain.dto.AdvertisementDTOForm;
 import com.lalitha.marketplace_api.domain.dto.AdvertisementDTOView;
+import com.lalitha.marketplace_api.domain.dto.UserDTOForm;
 import com.lalitha.marketplace_api.service.AdvertisementService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,12 @@ public class AdvertisementController {
     public ResponseEntity<AdvertisementDTOView> doCreateAd(@RequestBody @Validated AdvertisementDTOForm advertisementDTOForm) {
         AdvertisementDTOView adView = advertisementService.create(advertisementDTOForm);
         return new ResponseEntity<>(adView, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/getCatalog")
+    public ResponseEntity<List<AdvertisementDTOView>> doAuthenticateAndGetCatalog(@RequestParam String email, @RequestParam String password) {
+        List<AdvertisementDTOView> adViews = advertisementService.authAndGetCatalog(email,password);
+        return new ResponseEntity<>(adViews, HttpStatus.OK);
     }
     //find by id
     @Tag(name = "get", description = "GET methods of Advertisement APIs")
