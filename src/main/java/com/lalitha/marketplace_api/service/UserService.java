@@ -1,7 +1,10 @@
 package com.lalitha.marketplace_api.service;
 
+import com.lalitha.marketplace_api.domain.dto.AdvertisementDTOView;
 import com.lalitha.marketplace_api.domain.dto.UserDTOForm;
 import com.lalitha.marketplace_api.domain.dto.UserDTOView;
+
+import java.util.List;
 
 public interface UserService {
 
@@ -14,4 +17,6 @@ public interface UserService {
     void disableByEmail(String email);
 
     void enableByEmail(String email);
+
+    List<AdvertisementDTOView> authAndGetCatalog(UserDTOForm userDTOForm);
 }

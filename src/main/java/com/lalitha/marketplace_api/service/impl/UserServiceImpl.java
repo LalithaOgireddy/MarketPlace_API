@@ -1,26 +1,35 @@
 package com.lalitha.marketplace_api.service.impl;
 
+import com.lalitha.marketplace_api.domain.dto.AdvertisementDTOView;
 import com.lalitha.marketplace_api.domain.dto.UserDTOForm;
 import com.lalitha.marketplace_api.domain.dto.UserDTOView;
+import com.lalitha.marketplace_api.domain.entity.Advertisement;
 import com.lalitha.marketplace_api.domain.entity.User;
 import com.lalitha.marketplace_api.exception.DataNotFoundException;
+import com.lalitha.marketplace_api.exception.InvalidUserException;
+import com.lalitha.marketplace_api.repository.AdvertisementRepository;
 import com.lalitha.marketplace_api.repository.UserRepository;
+import com.lalitha.marketplace_api.service.AdvertisementService;
 import com.lalitha.marketplace_api.service.UserService;
 import com.lalitha.marketplace_api.util.CustomPasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final CustomPasswordEncoder passwordEncoder;
+    private final AdvertisementService advertisementService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, CustomPasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, CustomPasswordEncoder passwordEncoder, AdvertisementService advertisementService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.advertisementService = advertisementService;
     }
 
     @Override
@@ -94,5 +103,18 @@ public class UserServiceImpl implements UserService {
 
         //else update
         userRepository.updateExpiredByEmail(email,true);
+    }
+
+    @Override
+    public List<AdvertisementDTOView> authAndGetCatalog(UserDTOForm userDTOForm) {
+        List<AdvertisementDTOView> ads;
+        boolean authUser = authorizeUser(userDTOForm.email(), userDTOForm.password());
+        if(!authUser) { throw new InvalidUserException("User not found"); }
+        else {
+            ads = advertisementService.findAllBySeller(userDTOForm.email());
+        }
+        if(ads.isEmpty()) throw new DataNotFoundException("No advertisements found");
+        return ads;
+
     }
 }

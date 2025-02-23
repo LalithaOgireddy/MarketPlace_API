@@ -1,7 +1,9 @@
 package com.lalitha.marketplace_api.controller;
 
+import com.lalitha.marketplace_api.domain.dto.AdvertisementDTOView;
 import com.lalitha.marketplace_api.domain.dto.UserDTOForm;
 import com.lalitha.marketplace_api.domain.dto.UserDTOView;
+import com.lalitha.marketplace_api.service.AdvertisementService;
 import com.lalitha.marketplace_api.service.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -13,16 +15,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequestMapping("api/v1/users")
 @RestController
 @Validated
 public class UserController {
 
     private final UserService userService;
+    private final AdvertisementService advertisementService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AdvertisementService advertisementService) {
         this.userService = userService;
+        this.advertisementService = advertisementService;
     }
 
 
@@ -41,6 +47,12 @@ public class UserController {
     public ResponseEntity<UserDTOView> doRegisterUser(@Valid @RequestBody UserDTOForm userDTOForm) {
         UserDTOView userDTOView =userService.register(userDTOForm);
         return ResponseEntity.status(HttpStatus.CREATED).body(userDTOView);
+    }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<List<AdvertisementDTOView>> doAuthenticateAndGetCatalog(@Valid @RequestBody UserDTOForm userDTOForm) {
+        List<AdvertisementDTOView> adViews = userService.authAndGetCatalog(userDTOForm);
+        return new ResponseEntity<>(adViews, HttpStatus.OK);
     }
 
     @PutMapping("/disable")
