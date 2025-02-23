@@ -3,12 +3,15 @@ package com.lalitha.marketplace_api.service.impl;
 import com.lalitha.marketplace_api.domain.dto.AdvertisementDTOForm;
 import com.lalitha.marketplace_api.domain.dto.AdvertisementDTOView;
 import com.lalitha.marketplace_api.domain.entity.Advertisement;
+import com.lalitha.marketplace_api.domain.entity.User;
 import com.lalitha.marketplace_api.exception.DataNotFoundException;
 import com.lalitha.marketplace_api.repository.AdvertisementRepository;
+import com.lalitha.marketplace_api.repository.UserRepository;
 import com.lalitha.marketplace_api.service.AdvertisementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,17 +19,19 @@ import java.util.stream.Collectors;
 public class AdvertisementServiceImpl implements AdvertisementService {
 
     private final AdvertisementRepository advertisementRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public AdvertisementServiceImpl(AdvertisementRepository advertisementRepository) {
+    public AdvertisementServiceImpl(AdvertisementRepository advertisementRepository,UserRepository userRepository) {
         this.advertisementRepository = advertisementRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     public AdvertisementDTOView create(AdvertisementDTOForm form) {
         //check null value in form
         if(form == null) throw new IllegalArgumentException("form is null");
-
+        User seller = userRepository.getUserByEmail(form.seller().email());
         //convert form to entity
         Advertisement advertisement = Advertisement.builder()
                 .title(form.title())
@@ -36,9 +41,9 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .price(form.price())
                 .currency(form.currency())
                 .createdDate(form.createdDate())
-                .condition(form.condition())
+                .item_condition(form.item_condition())
                 .expiryDate(form.expiryDate())
-                .seller(form.seller())
+                .seller(seller)
                 .build();
 
         //save entity to db
@@ -69,16 +74,39 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .map(this::fromAdvEntityToView)
                 .collect(Collectors.toList());
     }
-    /*
+
     @Override
-    public List<AdvertisementDTOView> findAllByCategory(String category) {
-        return List.of();
+    public List<AdvertisementDTOView> findByFilterAndValue(String filter, String value){
+        if(filter == null && filter.isEmpty()) return findAll();
+        if(filter != null && value.isEmpty()) throw new IllegalArgumentException("Filter value is null");
+        if(filter == null && !value.isEmpty()) throw new IllegalArgumentException("Filter is null");
+        List<Advertisement> ads = new ArrayList<>();
+        if(filter.toLowerCase().equals("brand")){
+            ads = advertisementRepository.findByBrand(value.toLowerCase());
+        }
+        if(filter.toLowerCase().equals("brand")){
+            ads = advertisementRepository.findByBrand(value.toLowerCase());
+        }
+        if(filter.toLowerCase().equals("title")){
+            ads = advertisementRepository.findByTitleContains(value.toLowerCase());
+        }
+        if(filter.toLowerCase().equals("category")){
+            ads = advertisementRepository.findByCategory(value.toLowerCase());
+        }
+        if(ads.isEmpty()) throw new DataNotFoundException("Advertisements with given filter not found");
+        return ads.stream()
+                .map(this::fromAdvEntityToView)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<AdvertisementDTOView> findAllByCategoryAndKeyword(String category, String keyword) {
-        return List.of();
-    }*/
+    public List<AdvertisementDTOView> findByPriceRange(Double min, Double max){
+        List<Advertisement> ads = new ArrayList<>();
+        ads = advertisementRepository.findByPriceBetween(min, max);
+        return ads.stream()
+                .map(this::fromAdvEntityToView)
+                .collect(Collectors.toList());
+    }
 
     @Override
     public AdvertisementDTOView update(AdvertisementDTOForm form) {
@@ -94,7 +122,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         advertisement.setBrand(form.brand());
         advertisement.setPrice(form.price());
         advertisement.setCurrency(form.currency());
-        advertisement.setCondition(form.condition());
+        advertisement.setItem_condition(form.item_condition());
         advertisement.setExpiryDate(form.expiryDate());
         advertisement.setSold(form.sold());
 
@@ -120,14 +148,13 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .price(advertisement.getPrice())
                 .currency(advertisement.getCurrency())
                 .createdDate(advertisement.getCreatedDate())
-                .expiryDate(advertisement.getExpiryDate())
-                .seller(advertisement.getSeller());
+                .expiryDate(advertisement.getExpiryDate());
 
         if (advertisement.getBrand() != null) {
             builder.brand(advertisement.getBrand());
         }
-        if (advertisement.getCondition() != null) {
-            builder.condition(advertisement.getCondition());
+        if (advertisement.getItem_condition() != null) {
+            builder.item_condition(advertisement.getItem_condition());
         }
         return builder.build();
     }

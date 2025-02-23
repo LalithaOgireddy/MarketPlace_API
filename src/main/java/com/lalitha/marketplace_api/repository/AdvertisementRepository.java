@@ -17,4 +17,18 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
     @Query("SELECT a FROM Advertisement a,User u WHERE a.expiryDate > CURRENT_DATE() and a.seller.email = :email")
     List<Advertisement> findAllBySeller(@Param("email") String email);
 
+    @Query("SELECT a FROM Advertisement a WHERE a.expiryDate > CURRENT_DATE() and lower(a.brand) = :brand")
+    List<Advertisement> findByBrand(String brand);
+
+    @Query("SELECT a FROM Advertisement a WHERE a.expiryDate > CURRENT_DATE() and lower(a.title) like concat('%',:title,'%')")
+    List<Advertisement> findByTitleContains(@Param("title") String title);
+
+    @Query("SELECT a FROM Advertisement a WHERE a.expiryDate > CURRENT_DATE() and lower(a.category) = :category")
+    List<Advertisement> findByCategory(@Param("category") String category);
+
+    @Query("SELECT a FROM Advertisement a WHERE a.expiryDate > CURRENT_DATE() and a.price between :min and :max")
+    List<Advertisement> findByPriceBetween(@Param("min") Double min, @Param("max") Double max);
+
+
+
 }

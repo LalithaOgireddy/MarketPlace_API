@@ -36,18 +36,20 @@ public class Advertisement {
     @NotNull
     private Double price;
 
-    @Value("SEK")
     private String currency;
-    private String condition;
+    private String item_condition;
 
-    @NotNull
     private LocalDate createdDate;
 
     @NotNull
     private LocalDate expiryDate;
-    private boolean sold;
+
+    private Boolean sold;
+
+    @NotNull
     @ManyToOne
-    @JoinColumn(name = "user_id",nullable = false)
+    @JoinColumn(name = "email",nullable = false)
     private User seller;
+
 
 }

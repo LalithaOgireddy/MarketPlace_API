@@ -9,9 +9,9 @@ public record UserDTOForm (
     String email,
 
     @NotBlank(message = "Password is mandatory")
-    @Size(min = 8, message = "Password must have at least 8 characters")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\\\d)(?=.*[@$!%*?&])[A-Za-z\\\\d@$!%*?&]{8,}$",
-        message="Password must contain at least one uppercase letter, one lower case letter, one number and one special character")
+    //@Size(min = 8, message = "Password must have at least 8 characters")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+        message="Password must contain at least one uppercase letter, one lower case letter, one number and one special character and should contain at least 8 characters")
     String password
 ){
 }

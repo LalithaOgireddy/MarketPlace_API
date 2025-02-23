@@ -24,7 +24,7 @@ public class AdvertisementController {
 
     //add an advertisement
     @PostMapping
-    public ResponseEntity<AdvertisementDTOView> doCreateAd(AdvertisementDTOForm advertisementDTOForm) {
+    public ResponseEntity<AdvertisementDTOView> doCreateAd(@RequestBody @Validated AdvertisementDTOForm advertisementDTOForm) {
         AdvertisementDTOView adView = advertisementService.create(advertisementDTOForm);
         return new ResponseEntity<>(adView, HttpStatus.CREATED);
     }
@@ -46,5 +46,20 @@ public class AdvertisementController {
         List<AdvertisementDTOView> adViews = advertisementService.findAllBySeller(sellerEmail);
         return new ResponseEntity<>(adViews, HttpStatus.OK);
     }
+
+    //findbyfilterandvalue
+    @GetMapping("/filter")
+    public ResponseEntity<List<AdvertisementDTOView>> getAdsByFilter(@RequestParam String filter, @RequestParam String value) {
+        List<AdvertisementDTOView> adViews = advertisementService.findByFilterAndValue(filter, value);
+        return new ResponseEntity<>(adViews, HttpStatus.OK);
+    }
+
+    //findbyprice range
+    @GetMapping("/filter/price")
+    public ResponseEntity<List<AdvertisementDTOView>> getAdsByPriceRange(@RequestParam Double min, @RequestParam Double max) {
+        List<AdvertisementDTOView> adViews = advertisementService.findByPriceRange(min, max);
+        return new ResponseEntity<>(adViews, HttpStatus.OK);
+    }
+
 
 }

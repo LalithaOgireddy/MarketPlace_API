@@ -14,10 +14,9 @@ public record AdvertisementDTOView(
         String brand,
         Double price,
         String currency,
-        String condition,
+        String item_condition,
         LocalDate createdDate,
         LocalDate expiryDate,
-        boolean sold,
-        User seller
+        Boolean sold
 ) {
 }

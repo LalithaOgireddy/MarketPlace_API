@@ -2,6 +2,7 @@ package com.lalitha.marketplace_api.domain.dto;
 
 import com.lalitha.marketplace_api.domain.entity.User;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
@@ -19,17 +20,17 @@ public record AdvertisementDTOForm (
 
         String brand,
 
-        @NotBlank(message = "Price is mandatory")
+        @NotNull(message = "Price is mandatory")
         Double price,
         String currency,
-        String condition,
+        String item_condition,
         LocalDate createdDate,
 
-        @NotBlank(message = "Expiry date is mandatory")
+        @NotNull(message = "Expiry date is mandatory")
         LocalDate expiryDate,
-        boolean sold,
+        Boolean sold,
 
-        @NotBlank(message = "Seller is mandatory")
-        User seller
+        @NotNull(message = "Seller is mandatory")
+        UserDTOForm seller
 ){
 }

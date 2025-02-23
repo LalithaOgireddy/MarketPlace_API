@@ -3,7 +3,6 @@ package com.lalitha.marketplace_api.service;
 import com.lalitha.marketplace_api.domain.dto.UserDetailsDTOForm;
 import com.lalitha.marketplace_api.domain.dto.UserDetailsDTOView;
 
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
 

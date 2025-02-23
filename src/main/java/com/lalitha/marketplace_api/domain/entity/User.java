@@ -1,9 +1,6 @@
 package com.lalitha.marketplace_api.domain.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -19,6 +16,7 @@ import java.util.Set;
 @Builder
 
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
@@ -27,7 +25,7 @@ public class User {
     private String email;
 
     @NotNull
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false)
     private String password;
     private boolean expired;
 
